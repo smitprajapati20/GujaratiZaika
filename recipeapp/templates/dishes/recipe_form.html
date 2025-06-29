@@ -1,0 +1,108 @@
+{% extends "dishes/base.html" %}
+{% block content %}
+<style>
+  .recipe-form-container {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 40px 30px;
+    background: linear-gradient(145deg, #ffffff, #f1f1f1);
+    border-radius: 15px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .recipe-form-container h2 {
+    text-align: center;
+    color: #2e7d32;
+    font-size: 2em;
+    margin-bottom: 25px;
+    font-weight: 700;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  form input[type="text"],
+  form textarea,
+  form input[type="file"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #cfd8dc;
+    border-radius: 8px;
+    font-size: 1em;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  form input[type="text"]:focus,
+  form textarea:focus,
+  form input[type="file"]:focus {
+    border-color: #4CAF50;
+    background: #fff;
+    outline: none;
+  }
+
+  form textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  button[type="submit"] {
+    padding: 14px;
+    background: #4CAF50;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+
+  button[type="submit"]:hover {
+    background: #388E3C;
+    transform: translateY(-1px);
+  }
+
+  /* Optional: Icons for fields */
+  .recipe-form-container input::placeholder,
+  .recipe-form-container textarea::placeholder {
+    color: #9e9e9e;
+  }
+
+  @media (max-width: 768px) {
+    .recipe-form-container {
+      margin: 30px 20px;
+      padding: 25px 20px;
+    }
+
+    .recipe-form-container h2 {
+      font-size: 1.6em;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .recipe-form-container {
+      padding: 20px 15px;
+    }
+
+    button[type="submit"] {
+      font-size: 1em;
+      padding: 12px;
+    }
+  }
+</style>
+
+<div class="recipe-form-container">
+  <h2>🍽️ Post a New Recipe</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Post Recipe</button>
+  </form>
+</div>
+{% endblock %}

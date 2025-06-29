@@ -1,0 +1,190 @@
+{% extends "dishes/base.html" %}
+{% block content %}
+<style>
+  body {
+    background: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 15px;
+  }
+
+  .feed-title {
+    text-align: center;
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 30px;
+  }
+
+  .recipe-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .recipe-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .recipe-image {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    max-height: 400px;
+  }
+
+  .recipe-content {
+    padding: 20px;
+  }
+
+  .recipe-content h2 {
+    color: #4CAF50;
+    margin: 0 0 10px;
+    font-size: 1.5em;
+  }
+
+  .recipe-content p {
+    color: #555;
+    margin: 5px 0;
+    font-size: 1em;
+    line-height: 1.5;
+  }
+
+  .recipe-meta {
+    color: #888;
+    font-size: 0.9em;
+    margin-top: 10px;
+  }
+
+  .interaction-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 0 20px 20px 20px;
+  }
+
+  .interaction-row form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  .like-btn {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+
+  .comment-input {
+    flex: 1;
+    min-width: 150px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+  }
+
+  .rating-select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+  }
+
+  .submit-btn {
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  @media (max-width: 600px) {
+    .feed-title {
+      font-size: 1.5em;
+    }
+
+    .recipe-content h2 {
+      font-size: 1.2em;
+    }
+
+    .recipe-content p {
+      font-size: 0.95em;
+    }
+
+    .interaction-row form {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .comment-input, .rating-select, .submit-btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<div class="container">
+  <h1 class="feed-title">🍽️ Recipe Feed</h1>
+
+  {% for recipe in recipes %}
+  <div class="recipe-card">
+    {% if recipe.image %}
+    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="recipe-image">
+    {% endif %}
+    <div class="recipe-content">
+      <p><strong>{{ recipe.author.username }}</strong> posted:</p>
+      <h2>{{ recipe.title }}</h2>
+      <p>{{ recipe.description }}</p>
+      <p><em>Ingredients:</em> {{ recipe.ingredients }}</p>
+      <p class="recipe-meta">Posted at: {{ recipe.created_at|date:"M d, Y H:i" }}</p>
+    </div>
+
+    <div class="interaction-row">
+      <!-- Like form -->
+      <form method="post" action="{% url 'like_recipe' recipe.id %}">
+        {% csrf_token %}
+        <button type="submit" class="like-btn">
+          {% if user in recipe.liked_by.all %}
+            ❤️ {{ recipe.total_likes }}
+          {% else %}
+            🤍 {{ recipe.total_likes }}
+          {% endif %}
+        </button>
+      </form>
+
+      <!-- Comment & rating form -->
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+        <input type="text" name="text" class="comment-input" placeholder="Write a comment..." required>
+        <select name="rating" class="rating-select">
+          <option value="" disabled selected>⭐ Rate</option>
+          {% for i in "12345" %}
+            <option value="{{ i }}">{{ i }} ⭐</option>
+          {% endfor %}
+        </select>
+        <button type="submit" name="comment_submit" class="submit-btn">Post</button>
+      </form>
+    </div>
+  </div>
+  {% empty %}
+  <p style="text-align: center; color: #777;">No recipes posted yet. Be the first to share your dish!</p>
+  {% endfor %}
+</div>
+{% endblock %}

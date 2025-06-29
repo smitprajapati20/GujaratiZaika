@@ -1,0 +1,12 @@
+{% extends "dishes/base.html" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: auto; padding: 20px;">
+    <h2 style="color:#4CAF50; text-align:center;">Edit Recipe</h2>
+    <form method="post" enctype="multipart/form-data" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="padding: 10px 20px; background: #4CAF50; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Save Changes</button>
+    </form>
+</div>
+{% endblock %}
